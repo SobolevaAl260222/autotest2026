@@ -57,7 +57,7 @@ public class MainTest {
             expected = "Denied";
         }
 
-        boolean actual = Main.checkAccess(age);
+        String actual = Main.checkAccess(age);
 
         assertEquals(expected, actual);
 
@@ -119,9 +119,9 @@ public class MainTest {
 
         int age = 20;
 
-        boolean actual = Main.checkAccess(age);
+        String actual = Main.checkAccess(age);
 
-        boolean expected = true;
+        String expected = "Allowed";
 
         assertEquals(expected, actual);
 

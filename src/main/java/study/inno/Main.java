@@ -10,9 +10,14 @@ public class Main {
         return number % 2 == 0;
     }
 
+    /// 2. checkAccess
     // 2. checkAccess
-    public static boolean checkAccess(int age) {
-        return age >= 18;
+    public static String checkAccess(int age) {
+        if (age > 18) {
+            return "Allowed";
+        } else {
+            return "Denied";
+        }
     }
 
     // 3. isPositive
@@ -22,8 +27,10 @@ public class Main {
 
     // 4. getGrade
     public static String getGrade(int score) {
-        if (score < 21) {
+        if (score < 0 || score > 100) {
             return "Error";
+        } else if (score <= 20) {
+            return "E";
         } else if (score <= 40) {
             return "D";
         } else if (score <= 60) {
@@ -36,17 +43,16 @@ public class Main {
     }
 
     // 5. blastOff
-    public static String blastOff(int number) {
-        StringBuilder result = new StringBuilder();
+    public static String blastOff(int start) {
+        String result = "";
 
-        for (int i = number; i >= 1; i--) {
-            if (result.length() > 0) {
-                result.append(" ");
-            }
-            result.append(i);
+        for (int i = start; i >= 1; i--) {
+            result += i + " ";
         }
 
-        return result.toString();
+        result += "Поехали!";
+
+        return result;
     }
 
     // 6. sumToN
