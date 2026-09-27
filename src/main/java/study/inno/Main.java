@@ -50,9 +50,7 @@ public class Main {
             result += i + " ";
         }
 
-        result += "Поехали!";
-
-        return result;
+        return result.trim();
     }
 
     // 6. sumToN

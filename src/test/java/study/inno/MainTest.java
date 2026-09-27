@@ -187,9 +187,11 @@ public class MainTest {
     @Test
     void testBlastOff() {
 
-        String actual = Main.blastOff(5);
+        int start = 5;
 
-        String expected = "5 4 3 2 1 ";
+        String actual = Main.blastOff(start);
+
+        String expected = "5 4 3 2 1";
 
         assertEquals(expected, actual);
 
