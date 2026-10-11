@@ -14,6 +14,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.2")
     testImplementation("org.assertj:assertj-core:3.27.3")
+    implementation("io.rest-assured:rest-assured:6.0.1")
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.19.2")
 }
 
 tasks.test {
