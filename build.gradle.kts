@@ -16,6 +16,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.27.3")
     implementation("io.rest-assured:rest-assured:6.0.1")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.19.2")
+    testImplementation("com.codeborne:selenide:7.18.2")
 }
 
 tasks.test {
@@ -83,5 +84,16 @@ tasks.register<Test>("runTask2Tests") {
 tasks.register("afterTests") {
     doLast {
         println("Test run is over")
+    }
+}
+
+tasks.register<Test>("runTask3Tests") {
+    dependsOn("testClasses")
+
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+
+    useJUnitPlatform {
+        includeTags("task3")
     }
 }
