@@ -1,26 +1,32 @@
+
 package study.inno;
 
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeAll;
+import study.inno.config.TestConfig;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-import io.restassured.response.Response;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.UUID;
 
-import static org.hamcrest.Matchers.hasItem;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.empty;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.not;
+
+import study.inno.config.TestConfig;
 
 public class ApiTest {
-
-    private static final String BASE_URL = "http://localhost:8080";
+    @BeforeAll
+    static void printConfig() {
+        TestConfig.printConfig();
+    }
 
     // Задача 1.1
     // Проверка GET /goods/list через given(), when(), then()
@@ -30,24 +36,24 @@ public class ApiTest {
     void getGoodsListWithGivenWhenThen() {
 
         given()
-                .baseUri(BASE_URL)
+                .baseUri(TestConfig.getApiUrl())
                 .queryParam("page", 0)
                 .queryParam("size", 10)
                 .when()
                 .get("/goods/list")
                 .then()
                 .statusCode(200)
-                .body("goods", empty());
+                .body("goods", not(empty()));
     }
-
 
     // Задача 1.2
     @Test
     @Tag("api")
     @Tag("task1")
     void getGoodsListWithRequestSpecification() {
+
         RequestSpecification request = given()
-                .baseUri(BASE_URL)
+                .baseUri(TestConfig.getApiUrl())
                 .queryParam("page", 0)
                 .queryParam("size", 10);
 
@@ -55,26 +61,31 @@ public class ApiTest {
                 .get("/goods/list")
                 .then()
                 .statusCode(200)
-                .body("goods", empty());
+                .body("goods", not(empty()));
     }
 
-
     // Задача 1.3
+    // Создание товара и проверка через RestAssured
     @Test
     @Tag("api")
     @Tag("task1")
     void createGoodsAndVerifyWithRestAssured() {
-        String productName = "Апельсин";
+
+        String productName = TestConfig.getProductName()
+                + "-" + UUID.randomUUID().toString().substring(0, 8);
 
         Map<String, Object> product = Map.of(
                 "name", productName,
-                "price", ThreadLocalRandom.current().nextInt(100, 1000)
+                "price", TestConfig.getProductPrice()
         );
 
         // Создаём товар
         given()
-                .auth().basic("admin", "secret123")
-                .baseUri(BASE_URL)
+                .auth().basic(
+                        TestConfig.getAdminUsername(),
+                        TestConfig.getAdminPassword()
+                )
+                .baseUri(TestConfig.getApiUrl())
                 .contentType(ContentType.JSON)
                 .body(product)
                 .log().all()
@@ -86,7 +97,7 @@ public class ApiTest {
 
         // Получаем список и проверяем наличие товара
         given()
-                .baseUri(BASE_URL)
+                .baseUri(TestConfig.getApiUrl())
                 .queryParam("page", 0)
                 .queryParam("size", 100)
                 .log().all()
@@ -99,21 +110,27 @@ public class ApiTest {
     }
 
     // Задача 1.4
+    // Создание товара и проверка через AssertJ
     @Test
     @Tag("api")
     @Tag("task1")
     void createGoodsAndVerifyWithAssertJ() {
-        String productName = "Банан";
+
+        String productName = TestConfig.getProductName()
+                + "-" + UUID.randomUUID().toString().substring(0, 8);
 
         Map<String, Object> product = Map.of(
                 "name", productName,
-                "price", ThreadLocalRandom.current().nextInt(100, 1000)
+                "price", TestConfig.getProductPrice()
         );
 
         // Создаём товар
         given()
-                .auth().basic("admin", "secret123")
-                .baseUri(BASE_URL)
+                .auth().basic(
+                        TestConfig.getAdminUsername(),
+                        TestConfig.getAdminPassword()
+                )
+                .baseUri(TestConfig.getApiUrl())
                 .contentType(ContentType.JSON)
                 .body(product)
                 .log().all()
@@ -125,7 +142,7 @@ public class ApiTest {
 
         // Получаем список товаров
         Response response = given()
-                .baseUri(BASE_URL)
+                .baseUri(TestConfig.getApiUrl())
                 .queryParam("page", 0)
                 .queryParam("size", 100)
                 .log().all()

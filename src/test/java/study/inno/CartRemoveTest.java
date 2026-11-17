@@ -2,7 +2,6 @@
 package study.inno;
 
 import com.codeborne.selenide.SelenideElement;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.codeborne.selenide.Condition.exist;
@@ -10,13 +9,8 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
-public class CartRemoveTest {
+public class CartRemoveTest extends BaseTest {
 
-    // Открываем главную страницу перед тестом
-    @BeforeEach
-    void setUp() {
-        open("http://localhost:8080/");
-    }
 
     // Задача 1.2. Удалить добавленный товар из корзины
     // и проверить, что он больше не отображается

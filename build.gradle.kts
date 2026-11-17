@@ -15,8 +15,9 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.2")
     testImplementation("org.assertj:assertj-core:3.27.3")
     implementation("io.rest-assured:rest-assured:6.0.1")
-    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.19.2")
     testImplementation("com.codeborne:selenide:7.18.2")
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.19.2")
+    testRuntimeOnly("org.slf4j:slf4j-simple:2.0.17")
 }
 
 tasks.test {

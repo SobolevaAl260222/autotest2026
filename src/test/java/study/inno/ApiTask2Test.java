@@ -1,8 +1,12 @@
+
 package study.inno;
+
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import study.inno.config.TestConfig;
+import org.junit.jupiter.api.BeforeAll;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,9 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ApiTask2Test {
-    private static final String BASE_URL = "http://localhost:8080";
-    private static final String USERNAME = "admin";
-    private static final String PASSWORD = "secret123";
+    @BeforeAll
+    static void printConfig() {
+        TestConfig.printConfig();
+    }
 
     // Создаём уникальное название товара
     private String uniqueName(String baseName) {
@@ -36,9 +41,13 @@ public class ApiTask2Test {
 
     // Создаём товар и получаем его ID из списка
     private long createProductAndGetId(String name) {
+
         given()
-                .baseUri(BASE_URL)
-                .auth().basic(USERNAME, PASSWORD)
+                .baseUri(TestConfig.getApiUrl())
+                .auth().basic(
+                        TestConfig.getAdminUsername(),
+                        TestConfig.getAdminPassword()
+                )
                 .contentType(ContentType.JSON)
                 .body(createProductBody(name))
                 .log().all()
@@ -50,7 +59,7 @@ public class ApiTask2Test {
 
         Response response =
                 given()
-                        .baseUri(BASE_URL)
+                        .baseUri(TestConfig.getApiUrl())
                         .queryParam("page", 0)
                         .queryParam("size", 100)
                         .when()
@@ -83,8 +92,11 @@ public class ApiTask2Test {
         String name = uniqueName("Апельсин");
 
         given()
-                .baseUri(BASE_URL)
-                .auth().basic(USERNAME, PASSWORD)
+                .baseUri(TestConfig.getApiUrl())
+                .auth().basic(
+                        TestConfig.getAdminUsername(),
+                        TestConfig.getAdminPassword()
+                )
                 .contentType(ContentType.JSON)
                 .body(createProductBody(name))
                 .log().all()
@@ -96,7 +108,7 @@ public class ApiTask2Test {
 
         Response response =
                 given()
-                        .baseUri(BASE_URL)
+                        .baseUri(TestConfig.getApiUrl())
                         .queryParam("page", 0)
                         .queryParam("size", 100)
                         .when()
@@ -109,10 +121,13 @@ public class ApiTask2Test {
         List<Map<String, Object>> goods =
                 response.jsonPath().getList("goods");
 
+        assertNotNull(goods, "Список товаров не должен быть null");
+
         assertTrue(
                 goods.stream().anyMatch(
                         good -> name.equals(good.get("name"))),
-                "Созданный товар должен присутствовать в списке");
+                "Созданный товар должен присутствовать в списке"
+        );
     }
 
     // Задача 2.2 — GET /goods/{id}
@@ -124,8 +139,11 @@ public class ApiTask2Test {
         long id = createProductAndGetId(name);
 
         given()
-                .baseUri(BASE_URL)
-                .auth().basic(USERNAME, PASSWORD)
+                .baseUri(TestConfig.getApiUrl())
+                .auth().basic(
+                        TestConfig.getAdminUsername(),
+                        TestConfig.getAdminPassword()
+                )
                 .log().all()
                 .when()
                 .get("/goods/{id}", id)
@@ -144,8 +162,11 @@ public class ApiTask2Test {
         long id = createProductAndGetId(name);
 
         given()
-                .baseUri(BASE_URL)
-                .auth().basic(USERNAME, PASSWORD)
+                .baseUri(TestConfig.getApiUrl())
+                .auth().basic(
+                        TestConfig.getAdminUsername(),
+                        TestConfig.getAdminPassword()
+                )
                 .log().all()
                 .when()
                 .delete("/goods/{id}", id)
@@ -155,8 +176,11 @@ public class ApiTask2Test {
 
         // Проверяем, что удалённый товар больше не находится по ID
         given()
-                .baseUri(BASE_URL)
-                .auth().basic(USERNAME, PASSWORD)
+                .baseUri(TestConfig.getApiUrl())
+                .auth().basic(
+                        TestConfig.getAdminUsername(),
+                        TestConfig.getAdminPassword()
+                )
                 .when()
                 .get("/goods/{id}", id)
                 .then()
@@ -174,8 +198,11 @@ public class ApiTask2Test {
         String newName = uniqueName("Манго");
 
         given()
-                .baseUri(BASE_URL)
-                .auth().basic(USERNAME, PASSWORD)
+                .baseUri(TestConfig.getApiUrl())
+                .auth().basic(
+                        TestConfig.getAdminUsername(),
+                        TestConfig.getAdminPassword()
+                )
                 .contentType(ContentType.JSON)
                 .body(createProductBody(newName))
                 .log().all()
@@ -187,8 +214,11 @@ public class ApiTask2Test {
 
         // Проверяем новое название через GET /goods/{id}
         given()
-                .baseUri(BASE_URL)
-                .auth().basic(USERNAME, PASSWORD)
+                .baseUri(TestConfig.getApiUrl())
+                .auth().basic(
+                        TestConfig.getAdminUsername(),
+                        TestConfig.getAdminPassword()
+                )
                 .log().all()
                 .when()
                 .get("/goods/{id}", id)
@@ -204,7 +234,7 @@ public class ApiTask2Test {
     @Tag("task2")
     void getGoodsList() {
         given()
-                .baseUri(BASE_URL)
+                .baseUri(TestConfig.getApiUrl())
                 .queryParam("page", 0)
                 .queryParam("size", 10)
                 .log().all()
